@@ -1,4 +1,9 @@
 FROM yiisoftware/yii2-php:8.3-apache
 
-# Change document root for Apache
-RUN sed -i -e 's|/app/web|/app/backend/web|g' /etc/apache2/sites-available/000-default.conf
+# Enable rewrite
+RUN a2enmod rewrite
+
+# Добавляем конфиг бэка
+COPY docker/apache/backend.conf /etc/apache2/sites-available/backend.conf
+RUN a2ensite backend.conf \
+    && a2dissite 000-default.conf
