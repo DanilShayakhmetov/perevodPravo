@@ -5,7 +5,7 @@ services:
   frontend:
     build: frontend
     ports:
-      - 20081:80
+      - 20081:5173
     volumes:
       - ./:/app
 
