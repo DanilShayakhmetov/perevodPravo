@@ -38,6 +38,17 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'as corsFilter' => [
+            'Origin' => ['http://localhost:5173'],
+            'class' => \yii\filters\Cors::class,
+            'cors' => [
+                // Адрес фронта, который делает запросы
+                'Origin' => ['http://localhost:5173'],
+                'Access-Control-Request-Method' => ['GET','POST','OPTIONS'],
+                'Access-Control-Allow-Credentials' => true, // если нужны cookies, иначе false
+                'Access-Control-Allow-Headers' => ['Content-Type', 'Authorization'],
+            ],
+        ]
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

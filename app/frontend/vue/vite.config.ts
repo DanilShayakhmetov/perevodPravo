@@ -8,5 +8,8 @@ export default defineConfig({
   server: {
     host: true,      // чтобы слушать 0.0.0.0, если нужно
     port: 20180,     // порт по желанию
+    proxy: {
+      '/api': 'http://localhost:21080'
+    }
   },
 })

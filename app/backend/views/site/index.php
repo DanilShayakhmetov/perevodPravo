@@ -4,50 +4,52 @@
 
 $this->title = 'My Yii Application';
 ?>
-<div class="site-index">
+<div id="app">
+    <div v-for="t in translators" :key="t.id" style="margin-bottom:20px;">
 
-    <div class="jumbotron text-center bg-transparent">
-        <h1 class="display-4">Congratulations!</h1>
+        <h3>{{ t.name }} ({{ t.language }})</h3>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+        <div>
+            Статус:
+            <b v-if="t.is_busy">Занят</b>
+            <b v-else>Свободен</b>
+        </div>
 
-        <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+        <div>
+            Рабочие дни:
+            {{ formatDays(t.schedules) }}
         </div>
 
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            translators: []
+        },
+        methods: {
+            formatDays(schedules) {
+                const map = {
+                    1: 'Пн', 2: 'Вт', 3: 'Ср',
+                    4: 'Чт', 5: 'Пт', 6: 'Сб', 7: 'Вс'
+                };
+
+                return schedules
+                    .filter(s => s.is_working)
+                    .map(s => map[s.day_of_week])
+                    .join(', ');
+            }
+        },
+        mounted() {
+            fetch('/backend/web/index.php?r=translator/list')
+                .then(res => res.json())
+                .then(data => {
+                    this.translators = data;
+                });
+        }
+    });
+</script>
